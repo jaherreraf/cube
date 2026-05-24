@@ -332,124 +332,37 @@ const Cube = () => {
     animateMove(move, solveSpeed);
   }, [isAnimating, isSolving, solveSpeed, animateMove]);
 
-  const handleReset = useCallback(() => {
-    handleCancel();
-    setCubies(INITIAL_CUBIES);
-    setSolverStatus('idle');
-    setStatusMsg('');
-    setTotalMoves(0);
-  }, [handleCancel]);
-
-  if (!isMounted) return <div style={{ width: '100%', height: 600 }} />;
+  
+  if (!isMounted) return <div style={{ width: '100%', height: '100%', minHeight: 360 }} />;
 
   const movesLeft   = solveQueue.length;
   const movesPlayed = totalMoves - movesLeft;
   const progress    = totalMoves > 0 ? movesPlayed / totalMoves : 0;
 
   return (
-    <div style={{ width: '100%', height: 600, position: 'relative' }}>
-
-      
-
-      {/* ── Estado del solver (thinking / solving / done / error) ── */}
-      {solverStatus !== 'idle' && (
-        <div style={{
-          position: 'absolute', top: 14, left: '50%', transform: 'translateX(-50%)',
-          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, zIndex: 10,
-        }}>
-          <div style={{
-            background: solverStatus === 'error' ? 'rgba(127,0,0,0.85)' : 'rgba(0,0,0,0.8)',
-            color: solverStatus === 'done' ? '#4ade80' : '#fff',
-            padding: '7px 22px', borderRadius: 999, fontSize: 13, fontWeight: 500,
-            backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', gap: 10,
-          }}>
-            {solverStatus === 'thinking' && (
-              <span style={{ color: '#facc15', animation: 'pulse 1s infinite' }}>⏳</span>
-            )}
-            {solverStatus === 'solving' && (
-              <span style={{ color: '#4ade80' }}>●</span>
-            )}
-            {solverStatus === 'solving'
-              ? `Resolviendo… ${movesPlayed} / ${totalMoves} movimientos`
-              : statusMsg}
-          </div>
-
-          {/* Barra de progreso */}
-          {solverStatus === 'solving' && (
-            <div style={{
-              width: 200, height: 4, background: 'rgba(255,255,255,0.15)',
-              borderRadius: 999, overflow: 'hidden',
-            }}>
-              <div style={{
-                height: '100%', background: '#4ade80', borderRadius: 999,
-                width: `${progress * 100}%`, transition: 'width 0.3s',
-              }} />
-            </div>
-          )}
-        </div>
-      )}
-
+    <div style={{ width: '100%', height: '100%', minHeight: 360, position: 'relative' }}>
       {/* ── Controles inferiores ── */}
       <div style={{
-        position: 'absolute', bottom: 16, left: '50%', transform: 'translateX(-50%)',
+        position: 'absolute', bottom: 24, left: '50%', transform: 'translateX(-50%)',
         display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, zIndex: 10,
       }}>
-        {/* Slider de velocidad */}
-        {!isSolving && (
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: 10,
-            background: 'rgba(0,0,0,0.5)', padding: '6px 14px',
-            borderRadius: 8, backdropFilter: 'blur(6px)',
-          }}>
-            <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 11 }}>Rápido</span>
-            <input
-              type="range" min={80} max={600} step={20} value={solveSpeed}
-              onChange={e => setSolveSpeed(Number(e.target.value))}
-              style={{ width: 100, accentColor: '#4ade80' }}
-            />
-            <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 11 }}>Lento</span>
-          </div>
-        )}
-
+        
         {/* Botones */}
         <div style={{ display: 'flex', gap: 10 }}>
           {!isSolving ? (
-            <>
               <button
                 onClick={handleSolve}
                 disabled={isAnimating || solverStatus === 'thinking'}
-                style={{
-                  background: '#16a34a', color: '#fff', border: 'none',
-                  padding: '10px 24px', borderRadius: 999, fontWeight: 700,
-                  fontSize: 14, cursor: 'pointer', opacity: isAnimating ? 0.5 : 1,
-                  transition: 'all 0.2s',
-                }}
+                className="cursor-pointer  rounded-lg  bg-transparent border px-6 py-2 font-bold text-white hover:border-none hover:bg-[#1E293B] transition-all duration-400 ease-in-out"
               >
-                ✨ Resolver
+                Solve
               </button>
-              <button
-                onClick={handleReset}
-                disabled={isAnimating}
-                style={{
-                  background: 'rgba(255,255,255,0.15)', color: '#fff', border: 'none',
-                  padding: '10px 20px', borderRadius: 999, fontWeight: 700,
-                  fontSize: 14, cursor: 'pointer', opacity: isAnimating ? 0.5 : 1,
-                  transition: 'all 0.2s', backdropFilter: 'blur(6px)',
-                }}
-              >
-                🔄 Reset
-              </button>
-            </>
           ) : (
             <button
               onClick={handleCancel}
-              style={{
-                background: '#dc2626', color: '#fff', border: 'none',
-                padding: '10px 24px', borderRadius: 999, fontWeight: 700,
-                fontSize: 14, cursor: 'pointer',
-              }}
+              className="cursor-pointer  rounded-lg   px-6 py-2 font-bold text-white border-none bg-red-950/50 transition-all duration-400 ease-in-out"
             >
-              ✕ Cancelar
+              Cancel
             </button>
           )}
         </div>
